@@ -65,3 +65,10 @@ export const logOut = async () => {
     console.error(err)
   }
 }
+
+export const deleteAccount = async () => {
+  const res = await axios.delete(`${API}/users/deleteAccount`, {
+    withCredentials: true,
+  });
+  return res.data;
+};
