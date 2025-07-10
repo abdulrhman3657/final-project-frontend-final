@@ -4,9 +4,11 @@ import { TbUpload } from "react-icons/tb";
 import {
   getCurrentUser,
   logOut,
+  deleteAccount,
   updateProfile,
 } from "../services/auth.service";
 import { useNavigate } from "react-router";
+import Swal from "sweetalert2";
 
 function UserProfile({ onUpdate }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -83,6 +85,31 @@ function UserProfile({ onUpdate }) {
       navigate("/signin");
     } catch (err) {
       console.error("Logout failed", err);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "Your account will be permanently deleted!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#6c757d",
+      confirmButtonText: "Yes, delete it!",
+      cancelButtonText: "Cancel",
+      reverseButtons: true,
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deleteAccount();
+        Swal.fire("Deleted!", "Account has been deleted.", "success");
+        navigate("/signin");
+      } catch (err) {
+        console.error("Delete account failed", err);
+        Swal.fire("Error", "Failed to delete account.", "error");
+      }
     }
   };
 
@@ -227,6 +254,13 @@ function UserProfile({ onUpdate }) {
         >
           <FiLogOut size={18} />
           <span>Log Out</span>
+        </button>
+
+        <button
+          onClick={handleDeleteAccount}
+          className="flex gap-2 justify-center items-center w-full py-2 bg-transparent hover:bg-red-600 text-red-700 font-semibold hover:text-white px-4 border border-red-600 hover:border-transparent rounded-full"
+        >
+          <span>Delete Account</span>
         </button>
       </div>
     </div>
